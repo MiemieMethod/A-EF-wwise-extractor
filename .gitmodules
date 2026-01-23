@@ -1,6 +1,9 @@
 [submodule "wfp"]
 	path = wfp
-	url = https://github.com/BUnipendix/WwiseFilePackager.git
+	url = https://github.com/MiemieMethod/WwiseFilePackager.git
 [submodule "wwiser-utils"]
 	path = wwiser-utils
 	url = https://github.com/bnnm/wwiser-utils.git
+[submodule "data"]
+	path = data
+	url = https://github.com/Dimbreath/EndfieldData.git

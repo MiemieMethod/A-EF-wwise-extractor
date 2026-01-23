@@ -468,6 +468,31 @@ def decodeWems():
                 subprocess.run(
                     ["./vgmstream/vgmstream-cli", path, "-o", f"output/decode/{short_path}"])
 
+from convert_ogg import WwiseOpusConverter
+
+def decodeWemsToOgg():
+    for root, dirs, files in os.walk("output/rename"):
+        for file in files:
+            if file.endswith(".wem"):
+                path = root.replace("\\", "/") + "/" + file
+                short_path = path.replace("output/rename/", "").replace("wem", "ogg")
+                if not os.path.exists(f"output/decode_unrevorbed/{short_path}"):
+                    os.makedirs(os.path.dirname(f"output/decode_unrevorbed/{short_path}"), exist_ok=True)
+                if not os.path.exists(f"output/decode/{short_path}"):
+                    os.makedirs(os.path.dirname(f"output/decode/{short_path}"), exist_ok=True)
+                converter = WwiseOpusConverter(path)
+                try:
+                    converter.convert(f"output/decode/{short_path}")
+                    print(f"Successfully converted {path} to {f"output/decode/{short_path}"}")
+                except Exception as e:
+                    print(f"Error converting: {e}, trying ww2ogg")
+                    subprocess.run(
+                        ["./ww2ogg", path, "-o", f"output/decode_unrevorbed/{short_path}", "--pcb", "packed_codebooks_aoTuV_603.bin"])
+                    subprocess.run(
+                        ["./revorb", f"output/decode_unrevorbed/{short_path}", f"output/decode/{short_path}"])
+
+
+
 
 if __name__ == '__main__':
     print("[Main] Start!")
@@ -491,5 +516,6 @@ if __name__ == '__main__':
     # if you want to keep them, comment the line below.
     deleteCompletedFiles()
     print("[Main] Start decoding wems...")
-    decodeWems()
+    # decodeWems()
+    decodeWemsToOgg()
     print("[Main] Done!")
