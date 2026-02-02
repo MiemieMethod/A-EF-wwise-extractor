@@ -242,8 +242,14 @@ def renameExtrenalWems():
         os.makedirs(f"output/rename")
 
     for i in ["Chinese", "English", "Japanese", "Korean"]:
-        if not os.path.exists(f"output/rename/{i}/Voice"):
-            os.makedirs(f"output/rename/{i}/Voice")
+        with open("data/TableCfg/AudioDialog.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+            for key in data:
+                entry = data[key]
+                if not os.path.exists(f"output/rename/Voice/{i}/{os.path.dirname(entry["path"])}"):
+                    os.makedirs(f"output/rename/Voice/{i}/{os.path.dirname(entry["path"])}")
+                hash = fnv_hash_64(f"Voice/{i}/{entry["path"]}")
+                elegantRename(f"sfx/externals/{hash}", f"Voice/{i}/{entry["path"].replace(".wem", "")}")
     if not os.path.exists(f"output/rename/SFX"):
         os.makedirs(f"output/rename/SFX")
 
@@ -506,7 +512,7 @@ if __name__ == '__main__':
     print("[Main] Start generating bank data...")
     generateBankData()
     print("[Main] Start loading bank xml...")
-    loadBankXml(False)
+    loadBankXml()
     print("[Main] Start renaming external wems...")
     renameExtrenalWems()
     print("[Main] Start renaming event wems...")
